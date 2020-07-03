@@ -4,11 +4,11 @@
         <form action="" method=''>
             <div class="form-group col-md-4 mx-auto my-3">
                 <label for="email">Email</label>
-                <input type="email" class="form-control" name="email" id="email" placeholder="Please enter your email...">
+                <input type="email" class="form-control" name="email" id="email" placeholder="Email" v.model="input.email">
             </div>
             <div class="form-group col-md-4 mx-auto my-3">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" name="password" id="password" placeholder="Please enter your password...">
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password" v.model="input.password">
             </div>
             <div class="form-group col-md-4 mx-auto text-center mt-4">
                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -19,10 +19,16 @@
 
 <script>
 export default {
-    name: 'LoginForm'
-}
+    name: 'LoginForm',
+    data() {
+            return {
+                input: {
+                    email: "",
+                    password: ""
+                    }
+                }
+        }
+    }
 </script>
-
-}
 <style scoped>
 </style>
