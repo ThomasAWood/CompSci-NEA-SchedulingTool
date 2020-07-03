@@ -5,13 +5,15 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import App from './App';
 import Homepage from './components/Homepage';
 import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm';
 
 Vue.use(VueRouter);
 
 const router = new VueRouter({
   routes: [
     { path: '/', component: Homepage },
-    { path: '/login', component: LoginForm }
+    { path: '/login', component: LoginForm },
+    { path: '/register', component: RegisterForm}
   ]
 });
 
