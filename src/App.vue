@@ -1,16 +1,19 @@
 <template>
   <div id="app">
-    <LoginForm/>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import LoginForm from './components/LoginForm.vue'
+
+import Homepage from './components/Homepage.vue';
+import LoginForm from './components/LoginForm.vue';
 
 export default {
   name: 'App',
   components: {
-    LoginForm
+    LoginForm,
+    Homepage
   }
 }
 </script>
