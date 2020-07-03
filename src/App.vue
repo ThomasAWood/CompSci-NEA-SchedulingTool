@@ -5,17 +5,7 @@
 </template>
 
 <script>
-
-import Homepage from './components/Homepage.vue';
-import LoginForm from './components/LoginForm.vue';
-
-export default {
-  name: 'App',
-  components: {
-    LoginForm,
-    Homepage
-  }
-}
+export default { name: 'App' }
 </script>
 
 <style>

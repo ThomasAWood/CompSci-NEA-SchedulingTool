@@ -1,13 +1,21 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-Vue.config.productionTip = false
+import App from './App';
+import Homepage from './components/Homepage';
+import LoginForm from './components/LoginForm';
+
+Vue.use(VueRouter);
+
+const router = new VueRouter({
+  routes: [
+    { path: '/', component: Homepage },
+    { path: '/login', component: LoginForm }
+  ]
+});
 
 new Vue({
-  el: '#app',
-  router,
-  template: '<App/>',
-  components: { App }
-})
+  render: h => h(App),
+  router
+}).$mount('#app')
