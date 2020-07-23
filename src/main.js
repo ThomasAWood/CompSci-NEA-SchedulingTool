@@ -7,6 +7,7 @@ import Homepage from './components/Homepage';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import Test from './components/test'
+import AdminUserList from './components/AdminUserList.vue'
 
 Vue.use(VueRouter);
 
@@ -15,7 +16,8 @@ const router = new VueRouter({
     { path: '/', component: Homepage },
     { path: '/login', component: LoginForm },
     { path: '/register', component: RegisterForm},
-    { path: '/test', component: Test}
+    { path: '/test', component: Test},
+    { path: '/userList', component: AdminUserList}
   ]
 });
 
