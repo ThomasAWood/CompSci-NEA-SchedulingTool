@@ -20,9 +20,10 @@ Student.create = (newStudent, result) => {
     });
 };
 
+
 //Find a student by ID
 Student.findById = (studentId, result) => {
-    sql.query(`SELECT * FROM students WHERE id = ${studentId}`, (err, res) => {
+    sql.query(`SELECT * FROM students WHERE studentId = ${studentId}`, (err, res) => {
       if (err) {
         console.log("error: ", err);
         result(err, null);
@@ -40,9 +41,10 @@ Student.findById = (studentId, result) => {
     });
   };
 
+
 //Delete a student
 Student.remove = (id, result) => {
-    sql.query("DELETE FROM students WHERE id = ?", id, (err, res) => {
+    sql.query("DELETE FROM students WHERE studentId = ?", id, (err, res) => {
       if (err) {
         console.log("error: ", err);
         result(null, err);

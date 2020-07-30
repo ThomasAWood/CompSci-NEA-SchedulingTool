@@ -14,6 +14,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 require('./routes/student.routes.js')(app);
+require('./routes/teacher.routes.js')(app);
+require('./routes/lesson.routes.js')(app);
 
 app.listen(port, () => {
     console.log("Woop Woop! Server started successfully!")

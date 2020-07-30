@@ -27,5 +27,35 @@ exports.create = (req, res) => {
     });
   };
 
-  //Remove a student from the database
-  exports.create
+//Find a student in the database from id
+exports.findOne = (req, res) => {
+    Student.findById(req.params.studentId, (err, data) => {
+      if (err) {
+        if (err.kind === "not_found") {
+          res.status(404).send({
+            message: `Not found student with id ${req.params.studentId}.`
+          });
+        } else {
+          res.status(500).send({
+            message: "Error retrieving student with id " + req.params.studentId
+          });
+        }
+      } else res.send(data);
+    });
+  };
+
+exports.delete = (req, res) => {
+    Student.remove(req.params.studentId, (err, data) => {
+      if (err) {
+        if (err.kind === "not_found") {
+          res.status(404).send({
+            message: `Not found student with id ${req.params.studentId}.`
+          });
+        } else {
+          res.status(500).send({
+            message: "Could not delete student with id " + req.params.studentId
+          });
+        }
+      } else res.send({ message: `Student was deleted successfully!` });
+    });
+  };
