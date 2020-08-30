@@ -3,12 +3,12 @@ const Teacher = require("../models/teacher.model.js");
 module.exports = app => {
     var teachers = require("../controllers/teacher.controller.js");
 
-    //Create a new teacher
-    app.post('/teachers', teachers.create);
+    //Create new teacher info
+    app.post('/api/teachers', teachers.create);
 
-    // Retrieve a single student with studentId
-    app.get("/teachers/:teacherId", teachers.findOne);
+    // Retrieve teacher info with id
+    app.get("/api/teachers/:id", teachers.findOne);
 
-    //Remove a student with studentId
-    app.delete("/teachers/:teacherId", teachers.delete);
-}
+    //Remove teacher info with id
+    app.delete("/api/teachers/:id", teachers.delete);
+};

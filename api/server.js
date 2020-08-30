@@ -1,11 +1,14 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var port = process.env.PORT || 8080;
+var cors = require('cors');
+
 var app = express();
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(cors());
 
 //app.use(express.static(__dirname + "/dist/"));
 //app.get(/.*/, function(req, res) {
@@ -13,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //});
 
 
-require('./routes/student.routes.js')(app);
+require('./routes/user.routes.js')(app);
 require('./routes/teacher.routes.js')(app);
 require('./routes/lesson.routes.js')(app);
 

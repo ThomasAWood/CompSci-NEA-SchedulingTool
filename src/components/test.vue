@@ -1,6 +1,6 @@
 <template>
     <div class='container'>
-        <h1>This is a test route</h1>
+        <h1>This is the logged in page</h1>
     </div>
 </template>
 

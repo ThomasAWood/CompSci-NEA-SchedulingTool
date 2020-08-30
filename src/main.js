@@ -1,13 +1,15 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import 'bootstrap/dist/css/bootstrap.min.css'
+import store from './store';
 
 import App from './App';
 import Homepage from './components/Homepage';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import Test from './components/test'
-import AdminUserList from './components/AdminUserList.vue'
+import UserList from './components/UserList.vue'
+
 
 Vue.use(VueRouter);
 
@@ -17,11 +19,12 @@ const router = new VueRouter({
     { path: '/login', component: LoginForm },
     { path: '/register', component: RegisterForm},
     { path: '/test', component: Test},
-    { path: '/userList', component: AdminUserList}
+    { path: '/admin/users', component: UserList}
   ]
 });
 
 new Vue({
   render: h => h(App),
+  store,
   router
 }).$mount('#app')

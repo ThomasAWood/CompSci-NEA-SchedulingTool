@@ -1,14 +1,14 @@
-const Teacher = require("../models/teacher.model.js");
+const Lesson = require("../models/lesson.model.js");
 
 module.exports = app => {
-    var teachers = require("../controllers/teacher.controller.js");
+    var lessons = require("../controllers/lesson.controller.js");
 
-    //Create a new teacher
-    app.post('/teachers', teachers.create);
+    //Create a new lesson
+    app.post('/api/lessons', lessons.create);
 
-    // Retrieve a single student with studentId
-    app.get("/teachers/:teacherId", teachers.findOne);
+    // Retrieve a single lesson with lessonId
+    app.get("/api/lessons/:lessonId", lessons.findOne);
 
-    //Remove a student with studentId
-    app.delete("/teachers/:teacherId", teachers.delete);
-}
+    //Remove a lesson with lessonId
+    app.delete("/api/lessons/:lessonId", lessons.delete);
+};

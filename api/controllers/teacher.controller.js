@@ -1,6 +1,6 @@
 var Teacher = require("../models/teacher.model.js");
 
-//Add a teacher to the database
+//Add teacher info to the database
 exports.create = (req, res) => {
     // Validate request
     if (!req.body) {
@@ -9,36 +9,36 @@ exports.create = (req, res) => {
       });
     }
   
-    // Create a Teacher
+    // Create Teacher info
     const teacher = new Teacher({
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-      instrument: req.body.instrument
+      hourly: req.body.hourly,
+      instrument: req.body.instrument,
+      location: req.body.location,
+      about: req.body.about
     });
   
-    // Save Teacher in the database
+    // Save Teacher info in the database
     Teacher.create(teacher, (err, data) => {
       if (err)
         res.status(500).send({
           message:
-            err.message || "Some error occurred while creating the Teacher."
+            err.message || "Some error occurred while creating the Teacher Info."
         });
       else res.send(data);
     });
   };
 
-//Find a teacher in the database from id
+//Find teacher info in the database from id (Users table foreign)
 exports.findOne = (req, res) => {
-    Teacher.findById(req.params.teacherId, (err, data) => {
+    Teacher.findById(req.params.id, (err, data) => {
       if (err) {
         if (err.kind === "not_found") {
           res.status(404).send({
-            message: `Not found teacher with id ${req.params.teacherId}.`
+            message: `Not found Teacher Info with id ${req.params.id}.`
           });
         } else {
           res.status(500).send({
-            message: "Error retrieving teacher with id " + req.params.teacherId
+            message: "Error retrieving Teacher Info with id " + req.params.id
           });
         }
       } else res.send(data);
@@ -46,17 +46,17 @@ exports.findOne = (req, res) => {
   };
 
 exports.delete = (req, res) => {
-    Teacher.remove(req.params.teacherId, (err, data) => {
+    Teacher.remove(req.params.id, (err, data) => {
       if (err) {
         if (err.kind === "not_found") {
           res.status(404).send({
-            message: `Not found teacher with id ${req.params.teacherId}.`
+            message: `Not found teacher info with id ${req.params.id}.`
           });
         } else {
           res.status(500).send({
-            message: "Could not delete teacher with id " + req.params.teacherId
+            message: "Could not delete teacher info with id " + req.params.id
           });
         }
-      } else res.send({ message: `Teacher was deleted successfully!` });
+      } else res.send({ message: `Teacher Info was deleted successfully!` });
     });
   };

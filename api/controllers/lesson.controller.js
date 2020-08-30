@@ -1,6 +1,6 @@
-var Teacher = require("../models/teacher.model.js");
+var Lesson = require("../models/lesson.model.js");
 
-//Add a teacher to the database
+//Add a lesson to the database
 exports.create = (req, res) => {
     // Validate request
     if (!req.body) {
@@ -9,54 +9,56 @@ exports.create = (req, res) => {
       });
     }
   
-    // Create a Teacher
-    const teacher = new Teacher({
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-      instrument: req.body.instrument
+    
+    // Create a lesson
+    const lesson = new Lesson({
+        teacherId: req.body.teacherId,
+        startDateTime: req.body.startDateTime,
+        endDateTime: req.body.endDateTime, //YYYY-MM-DD HH:MI:SS
+        studentId: req.body.studentId
     });
   
-    // Save Teacher in the database
-    Teacher.create(teacher, (err, data) => {
+// Save lesson in the database
+    Lesson.create(lesson, (err, data) => {
       if (err)
         res.status(500).send({
           message:
-            err.message || "Some error occurred while creating the Teacher."
+            err.message || "Some error occurred while creating the Lesson."
         });
       else res.send(data);
     });
   };
 
-//Find a teacher in the database from id
+//Find a lesson in the database from id
 exports.findOne = (req, res) => {
-    Teacher.findById(req.params.teacherId, (err, data) => {
+    Lesson.findById(req.params.lessonId, (err, data) => {
       if (err) {
         if (err.kind === "not_found") {
           res.status(404).send({
-            message: `Not found teacher with id ${req.params.teacherId}.`
+            message: `Not found lesson with id ${req.params.lessonId}.`
           });
         } else {
           res.status(500).send({
-            message: "Error retrieving teacher with id " + req.params.teacherId
+            message: "Error retrieving lesson with id " + req.params.lessonId
           });
         }
       } else res.send(data);
     });
   };
 
+//Remove lesson from the database
 exports.delete = (req, res) => {
-    Teacher.remove(req.params.teacherId, (err, data) => {
+    Lesson.remove(req.params.lessonId, (err, data) => {
       if (err) {
         if (err.kind === "not_found") {
           res.status(404).send({
-            message: `Not found teacher with id ${req.params.teacherId}.`
+            message: `Not found lesson with id ${req.params.lessonId}.`
           });
         } else {
           res.status(500).send({
-            message: "Could not delete teacher with id " + req.params.teacherId
+            message: "Could not delete lesson with id " + req.params.lessonId
           });
         }
-      } else res.send({ message: `Teacher was deleted successfully!` });
+      } else res.send({ message: `Lesson was deleted successfully!` });
     });
   };
