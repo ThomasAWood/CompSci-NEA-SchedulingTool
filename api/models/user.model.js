@@ -59,7 +59,7 @@ User.retrieveAll = (result) => {
 
 //Delete a user
 User.remove = (id, result) => {
-    sql.query("DELETE FROM users WHERE id = ?", id, (err, res) => {
+    sql.query(`DELETE FROM users WHERE id = ${id}`, (err, res) => {
       if (err) {
         console.log("error: ", err);
         result(null, err);
@@ -74,6 +74,28 @@ User.remove = (id, result) => {
   
       console.log("deleted user with id: ", id);
       result(null, res);
+    });
+  };
+
+  //Check user login credentials
+  User.loginCheck = (email, password, result) => {
+    //Query if there is a user with email and password
+    sql.query(`SELECT * FROM users WHERE email = "${email}" AND password = "${password}"`, (err, res) => {
+      //if there is an error return it
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+      //if there is a response then return the user
+      if (res.length) {
+        console.log('Correct Login Credentials');
+        result(null, res[0]);
+        return
+      }
+      //else return no user
+      result({ kind: "not_found" }, null);
+      return;
     });
   };
 

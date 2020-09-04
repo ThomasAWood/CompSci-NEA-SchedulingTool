@@ -14,4 +14,7 @@ module.exports = app => {
 
     //Remove a user with id
     app.delete("/api/users/:user", users.delete);
+
+    //Validate user login
+    app.post('/api/sessions', users.login);
 };

@@ -7,18 +7,16 @@ import App from './App';
 import Homepage from './components/Homepage';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
-import Test from './components/test'
-import UserList from './components/UserList.vue'
+import UserList from './components/UserList'
 
 
 Vue.use(VueRouter);
 
 const router = new VueRouter({
   routes: [
-    { path: '/', component: Homepage },
-    { path: '/login', component: LoginForm },
-    { path: '/register', component: RegisterForm},
-    { path: '/test', component: Test},
+    { path: '/', component: Homepage, name: "homepage" },
+    { path: '/login', component: LoginForm, name: "loginForm" },
+    { path: '/register', component: RegisterForm, name: "registerForm"},
     { path: '/admin/users', component: UserList}
   ]
 });

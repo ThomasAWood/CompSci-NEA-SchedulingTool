@@ -2,7 +2,8 @@
     <div>
         <h1>Users List</h1>
         <div v-for="user in users" :key="user.id">
-            {{user}}
+            {{user.fname}}
+            <button type="button" class="btn" @click="loginUser(user)">Login</button>
         </div>
     </div>
 </template>
@@ -17,8 +18,13 @@
         },
         mounted(){
             this.$store.dispatch("loadUsers")
+        },
+        methods: {
+            loginUser(user) {
+                this.$store.dispatch('loginUser', user)
+            }
         }
-}
+    }
 </script>
 
 <style>

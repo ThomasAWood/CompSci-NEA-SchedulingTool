@@ -74,3 +74,19 @@ exports.delete = (req, res) => {
       } else res.send({ message: `User was deleted successfully!` });
     });
   };
+
+exports.login = (req, res) => {
+  User.loginCheck(req.body.email, req.body.password, (err, data) => {
+    if (err) {
+      if (err.kind === "not_found") {
+        res.status(401).send({
+          message: "Incorrect login credentials"
+        });
+      } else {
+        res.status(401).send({
+          message: "Error when checking login credentials"
+        });
+      }
+    } else res.send(data);
+  });
+};
