@@ -15,17 +15,22 @@ exports.create = (req, res) => {
       password: req.body.password,
       fname: req.body.fname,
       lname: req.body.lname,
-      type: req.body.type
+      isTeacher: req.body.isTeacher
     });
   
     // Save User in the database
     User.create(user, (err, data) => {
-      if (err)
-        res.status(500).send({
-          message:
-            err.message || "Some error occurred while creating the User."
-        });
-      else res.send(data);
+      if (err) {
+        //Error code 1062 is for duplicate entries
+        if (err.errno === 1062) {
+          res.status(401).send({
+            error: "User with email already exists. Please try again"
+          })
+        } else {
+          res.status(500).send({
+            error: "There was an error while registering the user. Please try again"
+          })
+        }} else res.send(data);
     });
   };
 
@@ -60,7 +65,7 @@ exports.getAll = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-    User.remove(req.params.id, (err, data) => {
+    User.remove(req.params.id, (err) => {
       if (err) {
         if (err.kind === "not_found") {
           res.status(404).send({
@@ -83,8 +88,24 @@ exports.login = (req, res) => {
           message: "Incorrect login credentials"
         });
       } else {
-        res.status(401).send({
+        res.status(500).send({
           message: "Error when checking login credentials"
+        });
+      }
+    } else res.send(data);
+  });
+};
+
+exports.register = (req, res) => {
+  User.registerCheck(req.body.email, (err, data) => {
+    if (err) {
+      if (err.kind === "found") {
+        res.status(401).send({
+          message: "User with email already exists"
+        });
+      } else {
+        res.status(401).send({
+          message: "Error when checking whether user with email exists"
         });
       }
     } else res.send(data);

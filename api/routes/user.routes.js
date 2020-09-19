@@ -16,5 +16,5 @@ module.exports = app => {
     app.delete("/api/users/:user", users.delete);
 
     //Validate user login
-    app.post('/api/sessions', users.login);
+    app.post('/api/users/sessions', users.login);
 };

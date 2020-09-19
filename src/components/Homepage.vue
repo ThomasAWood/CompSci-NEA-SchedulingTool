@@ -1,7 +1,13 @@
 <template>
     <div>
         <div v-if='currentUser.fname'>
-            <h1>Welcome to your homepage {{ currentUser.fname }}</h1>
+            <div v-if="currentUser.isTeacher === 0">
+                <h1>Welcome student {{ currentUser.fname }}</h1>
+                <teacher-homepage></teacher-homepage>
+            </div>
+            <div v-else>
+                <h1>Welcome teacher {{ currentUser.fname}}</h1>
+            </div>
         </div>
         <div class="container" v-else>
             <div class="text-center my-5"><h1>Music Lesson Scheduling Tool</h1></div>
@@ -13,12 +19,20 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import TeacherHomepage from './TeacherHomepage';
+
+import { mapState } from 'vuex';
 export default {
     name: 'Homepage',
     computed: {
         ...mapState(['currentUser'])
     },
+    mounted(){
+        this.$store.dispatch("loadUsers")
+        },
+    components: {
+        TeacherHomepage
+    }
     }
 </script>
 

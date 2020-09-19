@@ -1,13 +1,15 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import Api from '../service/api';
+//import { user } from "../../api/config/db.config";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
         users: [],
-        currentUser: {}
+        currentUser: {},
+        lessons: []
     },
     mutations: {
         SET_USERS(state, users) {
@@ -20,6 +22,9 @@ export default new Vuex.Store({
         SET_CURRENT_USER(state, user) {
             state.currentUser = user;
             window.localStorage.currentUser = JSON.stringify(user);
+        },
+        SET_CURRENT_LESSONS(state, lessons) {
+            state.lessons = lessons;
         }
     },
     actions: {
@@ -35,10 +40,41 @@ export default new Vuex.Store({
             commit('LOGOUT_USER')
         },
         async loginUser({commit}, loginInfo) {
-            let response = await Api().post('/sessions', loginInfo);
-            let user = response.data;
-            commit('SET_CURRENT_USER', user);
+            try {
+                let response = await Api().post('/users/sessions', loginInfo);
+                let user = response.data;
+                commit('SET_CURRENT_USER', user);
+                return
+            } catch {
+                return {error: "Username/Password was incorrect. Please try again"}
+            }
+            
+        },
+        async registerUser({commit}, registerInfo) {
+            try {
+                let response = await Api().post('/users', registerInfo);
+                let user = response.data;
+                if (user.error) {
+                    return user.error
+                }
+                commit('SET_CURRENT_USER', user);
+                return
+            } catch {
+                return {error: "There was an error. Please try registering again"}
+            }
+        },
+        async createLesson({commit}, lessonInfo) {
+            try {
+                let response = await Api().post('/lessons', lessonInfo);
+                let lesson = response.data;
+                if (lesson.error) {
+                    return lesson.error
+                }
+                commit('SET_CURRENT_LESSONS', lesson);
+                return
+            } catch {
+                return {error: "There was an error while creating the lesson"}
+            }
         }
-    },
-    modules: {}
-});
+
+}});

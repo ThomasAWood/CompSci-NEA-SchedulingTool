@@ -1,15 +1,15 @@
 <template>
-    <div class="text-center" id="loginPage">
-        <form class="form-signin">
-            <h1 class="mb-5">Login</h1>
-            <input type="email" class="form-control" placeholder="Email" id="emailInput" v-model="loginInfo.email">
+    <div class="text-center" id="registerTeacherPage">
+        <form class="form-register">
+            <h1 class="mb-5">Register Teacher</h1>
+            <input type="text" class="form-control" placeholder="Email" id="emailInput" v-model="loginInfo.email">
             <div class="input-group">
                 <input :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Password" id="passwordInput" v-model="loginInfo.password">
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="button" @click="showPassword = !showPassword"><i :class='showPassword ? "fas fa-eye-slash" : "fas fa-eye"'></i></button>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary mt-5" @click="loginUser">Submit</button>
+            <button type="submit" class="btn btn-primary mt-5" @click="registerUser">Submit</button>
         </form>
     </div>
 </template>
@@ -34,8 +34,13 @@ export default {
             } else {
                 this.$router.push({ name: 'homepage'});
             }
-            }
+            
+        },
+        validateEmail(email) {
+            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
         }
+    }
     }
 </script>
 
@@ -52,7 +57,6 @@ export default {
  .form-signin {
     width: 100%;
     max-width: 330px;
-    padding: 15px;
     margin: auto;
  }
 </style>

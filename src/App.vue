@@ -1,5 +1,9 @@
 <template>
   <div id="app">
+    <link rel="stylesheet" 
+        href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" 
+        integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" 
+        crossorigin="anonymous">
     <div v-if="currentUser.fname">
       {{ currentUser.fname }}
       <button class="btn btn-primary" @click="logoutUser">Logout</button>
@@ -30,7 +34,7 @@ export default {
       this.$router.push({ name: "registerForm"});
     }
   }
-   };
+   #};
 </script>
 
 <style>
@@ -38,5 +42,14 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+
+}
+
+.error {
+  color: red;
+  padding: 0px;
+  margin: 0px;
 }
 </style>

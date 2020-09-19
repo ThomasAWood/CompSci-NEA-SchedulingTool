@@ -60,3 +60,22 @@ exports.delete = (req, res) => {
       } else res.send({ message: `Teacher Info was deleted successfully!` });
     });
   };
+
+exports.getLessonsBookings = (req, res) => {
+  let searchRequest = new SearchRequest({
+    id: req.body.id,
+    startDate: req.body.startDate,
+    endDate: req.body.endDate
+  });
+
+  Teacher.getLessons(searchRequest, (err, data) => {
+    if (err) {
+      console.log(err)
+      res.status(404).send({
+        message: 'Error in controller'
+      });
+    } else {
+      res.send(data);
+    }
+  });
+};

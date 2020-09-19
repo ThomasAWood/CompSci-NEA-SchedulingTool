@@ -13,9 +13,10 @@ exports.create = (req, res) => {
     // Create a lesson
     const lesson = new Lesson({
         teacherId: req.body.teacherId,
-        startDateTime: req.body.startDateTime,
-        endDateTime: req.body.endDateTime, //YYYY-MM-DD HH:MI:SS
-        studentId: req.body.studentId
+        startDateTime: req.body.startDate, //YYYY-MM-DD HH:MM:SS
+        duration: req.body.duration,
+        endDateTime: req.body.endDate, //YYYY-MM-DD HH:MM:SS
+        isRecurring: req.body.isRecurring
     });
   
 // Save lesson in the database
@@ -29,6 +30,7 @@ exports.create = (req, res) => {
     });
   };
 
+/*
 //Find a lesson in the database from id
 exports.findOne = (req, res) => {
     Lesson.findById(req.params.lessonId, (err, data) => {
@@ -62,3 +64,4 @@ exports.delete = (req, res) => {
       } else res.send({ message: `Lesson was deleted successfully!` });
     });
   };
+  */

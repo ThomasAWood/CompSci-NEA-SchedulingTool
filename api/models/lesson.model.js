@@ -3,8 +3,9 @@ var sql = require('../db.js');
 var Lesson = function(lesson) {
     this.teacherId = lesson.teacherId,
     this.startDateTime = lesson.startDateTime,
+    this.duration = lesson.duration,
     this.endDateTime = lesson.endDateTime,
-    this.studentId = lesson.studentId
+    this.isRecurring = lesson.isRecurring
 };
 
 //Create a new lesson
@@ -20,7 +21,7 @@ Lesson.create = (newLesson, result) => {
         result(null, {id: res.insertId, ...newLesson});
     });
 };
-
+/*
 //Find a lesson by ID
 Lesson.findById = (lessonId, result) => {
     sql.query(`SELECT * FROM lessons WHERE lessonId = ${lessonId}`, (err, res) => {
@@ -61,5 +62,5 @@ Lesson.remove = (id, result) => {
       result(null, res);
     });
   };
-
+*/
 module.exports = Lesson;

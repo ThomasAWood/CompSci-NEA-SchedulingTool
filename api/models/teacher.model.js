@@ -7,6 +7,7 @@ var Teacher = function(teacher) {
     this.about = teacher.about
 };
 
+
 //Create new teacher info
 Teacher.create = (newTeacher, result) => {
     sql.query("INSERT INTO teachers SET ?", newTeacher, (err, res) => {
@@ -61,5 +62,7 @@ Teacher.remove = (id, result) => {
       result(null, res);
     });
   };
+
+
 
 module.exports = Teacher;
