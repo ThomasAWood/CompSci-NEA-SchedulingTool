@@ -10,16 +10,30 @@ var Lesson = function(lesson) {
 
 //Create a new lesson
 Lesson.create = (newLesson, result) => {
-    sql.query("INSERT INTO lessons SET ?", newLesson, (err, res) => {
+    //console.log('New Lesson:', newLesson)
+    sql.query(`INSERT INTO lessons SET teacherId = ${newLesson.teacherId}, startDateTime=from_unixtime(${newLesson.startDateTime}), duration="${newLesson.duration}", endDateTime=from_unixtime(${newLesson.endDateTime}), isRecurring=${newLesson.isRecurring};`, newLesson, (err, res) => {
         if(err) {
-            console.log("error: ", err);
+            console.log(err);
             result(err, null);
             return;
         }
 
-        console.log("created lesson: ", { id: res.insertId, ...newLesson });
+        //console.log("created lesson: ", { id: res.insertId, ...newLesson });
+        //console.log("Lesson Date", newLesson.date)
         result(null, {id: res.insertId, ...newLesson});
     });
+};
+
+
+Lesson.getLessonsByTeacherId = (teacherId, result) => {
+  sql.query(`SELECT * FROM lessons WHERE teacherId = ${teacherId}`, (err, res) => {
+    if (err) {
+      console.log(err);
+      result(err, null)
+    }
+    //console.log('Retrieved Lessons:', res)
+    result(null, res)
+  })
 };
 /*
 //Find a lesson by ID

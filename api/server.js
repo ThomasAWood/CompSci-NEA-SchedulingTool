@@ -9,7 +9,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 require('./routes/user.routes.js')(app);
-require('./routes/teacher.routes.js')(app);
 require('./routes/lesson.routes.js')(app);
 require('./routes/lessonException.routes.js')(app);
 require('./routes/booking.routes.js')(app);

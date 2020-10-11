@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { extend, localize } from "vee-validate";
+import { extend, localize, ValidationObserver, ValidationProvider } from "vee-validate";
 import { required, email, min, max } from "vee-validate/dist/rules";
 import en from "vee-validate/dist/locale/en.json";
 
@@ -60,7 +60,7 @@ extend("email", email);
 extend("min", min);
 extend("max", max);
 extend('password', password => {
-    let re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/;
+    let re = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,50}$/;
     return password.match(re);
 });
 
@@ -109,7 +109,8 @@ export default {
                     lname: "",
                     email: "",
                     password: "",
-                    isTeacher: 0
+                    isTeacher: 0,
+                    hourly: null
                     }
                 }
         },
@@ -119,9 +120,16 @@ export default {
             if (user.error) {
                 alert(user.error);
             } else {
-                console.log("This ran!")
+                alert("Welcome", user.fname);
+                console.log("Student Registered!");
+                this.$router.push({ name: 'homepage'});
+
             }
     }
+    },
+    components: {
+        ValidationObserver,
+        ValidationProvider
     }
 }
 </script>

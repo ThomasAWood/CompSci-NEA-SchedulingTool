@@ -5,7 +5,7 @@ exports.create = (req, res) => {
     // Validate request
     if (!req.body) {
       res.status(400).send({
-        message: "Content can not be empty!"
+        error: "Content can not be empty!"
       });
     }
   
@@ -15,7 +15,8 @@ exports.create = (req, res) => {
       password: req.body.password,
       fname: req.body.fname,
       lname: req.body.lname,
-      isTeacher: req.body.isTeacher
+      isTeacher: req.body.isTeacher,
+      hourly: req.body.hourly
     });
   
     // Save User in the database
@@ -30,7 +31,9 @@ exports.create = (req, res) => {
           res.status(500).send({
             error: "There was an error while registering the user. Please try again"
           })
-        }} else res.send(data);
+        }} else {
+          res.status(200).send(data)
+        };
     });
   };
 
@@ -109,5 +112,17 @@ exports.register = (req, res) => {
         });
       }
     } else res.send(data);
+  });
+};
+
+exports.searchForTeacher = (req, res) => {
+  User.teacherSearch(req.body.searchInput, (err, teachers) => {
+    if (err) {
+      res.status(401).send({
+        error: 'There was an error when searching for the teachers'
+      });
+    } else {
+      res.send(teachers);
+    }
   });
 };

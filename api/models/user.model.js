@@ -1,12 +1,12 @@
 var sql = require('../db.js');
-const { validate } = require('vee-validate');
 
 var User = function(user) {
     this.email = user.email,
     this.password = user.password,
     this.fname = user.fname,
     this.lname = user.lname,
-    this.isTeacher = user.isTeacher
+    this.isTeacher = user.isTeacher,
+    this.hourly = user.hourly
 };
 
 //Create a new User
@@ -117,6 +117,17 @@ User.registerCheck = (email, result) => {
   });
 };
 
-
+User.teacherSearch = (searchInput, result) => {
+  sql.query(`SELECT id, email, fname, lname, hourly FROM users WHERE (isTeacher) = 1 AND ((fname LIKE '%${searchInput}%') or (lname LIKE '%${searchInput}%'));`, (err, res) => {
+  if (err) {
+    console.log(err);
+    result(err, null);
+    return
+  }
+  console.log('Teachers with fname or lname found:', res)
+  console.log('Search', searchInput)
+  result(null, res);
+  });
+};
 
 module.exports = User;

@@ -8,4 +8,7 @@ module.exports = app => {
 
     app.post('/api/bookings/cancel', bookings.cancel);
 
+    app.get('/api/teachers/bookings/:id', bookings.getTeachersBookings);
+
+    app.get('/api/students/bookings/:id', bookings.getStudentsBookings);
 };

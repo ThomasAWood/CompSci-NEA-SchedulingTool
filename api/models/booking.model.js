@@ -17,10 +17,12 @@ Booking.create = (newBooking, result) => {
         }
 
         console.log("created booking: ", { id: res.insertId, ...newBooking });
+        console.log("Booking Date", newBooking.date.toString())
         result(null, {id: res.insertId, ...newBooking});
     });
 };
 
+//Cancel a booking
 Booking.cancel = (id, result) => {
     sql.query(`UPDATE booking SET cancelled = 1 WHERE id = '${id}'`, (err, res) => {
         if(err) {
@@ -31,6 +33,35 @@ Booking.cancel = (id, result) => {
 
         console.log("Cancelled Booking: ", res);
         result(null, {res})
+    });
+};
+
+//Get teachers bookings
+Booking.teachersBookings = (teacherId, result) => {
+    sql.query(`SELECT nea.booking.id, nea.booking.studentId, nea.booking.lessonId, nea.booking.date, nea.booking.cancelled 
+    FROM nea.booking, nea.lessons
+    WHERE ((nea.booking.lessonId = nea.lessons.id)
+    AND (nea.lessons.teacherId = ${teacherId}));`, (err, res) => {
+        if(err) {
+            console.log(err);
+            result(err, null);
+            return;
+        }
+        //console.log('Bookings:', res[0].date.toString())
+        result(null, res);
+    });
+};
+
+
+Booking.studentsBookings = (studentId, result) => {
+    sql.query(`SELECT * FROM nea.booking WHERE studentId = ${studentId}`, (err, res) => {
+        if (err) {
+            console.log(err);
+            result(err, null);
+            return
+        }
+        console.log(res[0]);
+        result(null, res)
     });
 };
 

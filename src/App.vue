@@ -7,12 +7,13 @@
     <div v-if="currentUser.fname">
       {{ currentUser.fname }}
       <button class="btn btn-primary" @click="logoutUser">Logout</button>
+      <button class="btn btn-primary" @click="homepageRedirect">Home</button>
     </div>
     <div v-else>
       <button class="btn btn-primary" @click="loginRedirect">Login</button>
       <button class="btn btn-primary" @click="registerRedirect">Register</button>
     </div>
-    <router-view></router-view>
+    <router-view id="body"></router-view>
   </div>
 </template>
 
@@ -32,9 +33,12 @@ export default {
     },
     registerRedirect() {
       this.$router.push({ name: "registerForm"});
+    },
+    homepageRedirect() {
+      this.$router.push({ name: "homepage"})
     }
   }
-   #};
+   };
 </script>
 
 <style>

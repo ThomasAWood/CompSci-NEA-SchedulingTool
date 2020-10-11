@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import Api from '../service/api';
-//import { user } from "../../api/config/db.config";
 
 Vue.use(Vuex);
 
@@ -9,7 +8,9 @@ export default new Vuex.Store({
     state: {
         users: [],
         currentUser: {},
-        lessons: []
+        teachersLessons: [],
+        teachers: [],
+        bookings: []
     },
     mutations: {
         SET_USERS(state, users) {
@@ -23,8 +24,20 @@ export default new Vuex.Store({
             state.currentUser = user;
             window.localStorage.currentUser = JSON.stringify(user);
         },
-        SET_CURRENT_LESSONS(state, lessons) {
-            state.lessons = lessons;
+        SET_TEACHERS_LESSONS(state, lessons) {
+            state.teachersLessons = lessons;
+        },
+        SET_TEACHERS(state, teachers) {
+            state.teachers = teachers
+        },
+        CLEAR_TEACHERS(state) {
+            state.teachers = []
+        },
+        ADD_BOOKING(state, booking) {
+            state.bookings.append(booking);
+        },
+        SET_BOOKINGS(state, bookings) {
+            state.bookings = bookings
         }
     },
     actions: {
@@ -39,6 +52,15 @@ export default new Vuex.Store({
         logoutUser({commit}) {
             commit('LOGOUT_USER')
         },
+        async loadTeachersLessons({commit}, searchInfo) {
+            try {
+                let response = await Api().post('/search/teachers/lessons', searchInfo)
+                let lessons = response.data.lessonInstances
+                commit('SET_TEACHERS_LESSONS', lessons)
+            } catch {
+                return {error: "There was an error when loading teachers lessons"}
+            }
+            },
         async loginUser({commit}, loginInfo) {
             try {
                 let response = await Api().post('/users/sessions', loginInfo);
@@ -58,7 +80,7 @@ export default new Vuex.Store({
                     return user.error
                 }
                 commit('SET_CURRENT_USER', user);
-                return
+                return user
             } catch {
                 return {error: "There was an error. Please try registering again"}
             }
@@ -70,11 +92,67 @@ export default new Vuex.Store({
                 if (lesson.error) {
                     return lesson.error
                 }
-                commit('SET_CURRENT_LESSONS', lesson);
-                return
+                commit('SET_TEACHERS_LESSONS', lesson)
+                return lesson  
             } catch {
                 return {error: "There was an error while creating the lesson"}
             }
-        }
+        },
+        async searchForTeachers({commit}, searchInput) {
+            try {
+                let response = await Api().post('/teachers/search', searchInput);
+                console.log(response)
+                let teachers = response.data
+                if (teachers.error) {
+                    return teachers.error
+                }
+                commit('SET_TEACHERS', teachers)
+                return teachers
+            } catch {
+                return {error: "There was an error while searching the teachers"}
+            }
+            
 
+        },
+        async createBooking({commit}, bookingInfo) {
+            try {
+                console.log(bookingInfo)
+                let reponse = await Api().post('/bookings', bookingInfo)
+                console.log('Create Booking Store response', reponse)
+                let booking = reponse.data
+                if (booking.error) {
+                    return booking.error
+                }
+                commit('ADD_BOOKING', booking)
+                return booking
+            } catch {
+                return {error: "There was an error while creating the booking"}
+            }    
+        },
+        async loadTeachersBookings({commit}, userId) {
+            try {
+                let response = await Api().get(`/teachers/bookings/${userId}`)
+                let bookings = response.data
+                if (bookings.error) {
+                    return bookings.error
+                }
+                commit('SET_BOOKINGS', bookings)
+                return
+            } catch {
+                return { error: "There was an error while getting the teachers bookings" }
+            }
+        },
+        async loadStudentsBookings({commit}, userId) {
+            try {
+                let response = await Api().get(`/students/bookings/${userId}`)
+                let bookings = response.data
+                if (bookings.error) {
+                    return bookings.error
+                }
+                commit('SET_BOOKINGS', bookings)
+                return
+            } catch {
+                return { error: "There was an error while getting the students bookings" }
+            }
+        }
 }});

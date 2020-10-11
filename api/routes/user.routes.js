@@ -17,4 +17,6 @@ module.exports = app => {
 
     //Validate user login
     app.post('/api/users/sessions', users.login);
+
+    app.post('/api/teachers/search', users.searchForTeacher);
 };

@@ -2,11 +2,10 @@
     <div>
         <div v-if='currentUser.fname'>
             <div v-if="currentUser.isTeacher === 0">
-                <h1>Welcome student {{ currentUser.fname }}</h1>
-                <teacher-homepage></teacher-homepage>
+                <student-homepage></student-homepage>
             </div>
             <div v-else>
-                <h1>Welcome teacher {{ currentUser.fname}}</h1>
+                <teacher-homepage></teacher-homepage>
             </div>
         </div>
         <div class="container" v-else>
@@ -20,6 +19,7 @@
 
 <script>
 import TeacherHomepage from './TeacherHomepage';
+import StudentHomepage from './StudentHomepage';
 
 import { mapState } from 'vuex';
 export default {
@@ -31,7 +31,8 @@ export default {
         this.$store.dispatch("loadUsers")
         },
     components: {
-        TeacherHomepage
+        TeacherHomepage,
+        StudentHomepage
     }
     }
 </script>
