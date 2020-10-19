@@ -4,7 +4,7 @@
             <h3 class="my-3">Create New Lesson Slot</h3>
             <div class="my-4">
                 <span class="mb-2">Date and Time</span>
-                <Datepicker :bootstrap-styling=true :inline=false placeholder='Date' v-model="startDateInput"></Datepicker>
+                <Datepicker :bootstrap-styling=true :inline=false placeholder='Date' v-model="startDateInput" :disabled-dates="disabledDates"></Datepicker>
                 <Timepicker v-model="startTimeInput" name="StartTimePicker"></Timepicker>
             </div>
             <div class="mt-4">
@@ -16,7 +16,7 @@
                 <input type="checkbox" name="Repeat" class="mx-2" v-model="lessonInfo.isRecurring">
             </div>
             <div v-if="lessonInfo.isRecurring">
-                <Datepicker name='repeatUntilDate' :bootstrap-styling=true :inline=false placeholder='Repeat Weekly Until...' v-model="endDateInput"></Datepicker>
+                <Datepicker name='repeatUntilDate' :bootstrap-styling=true :inline=false placeholder='Repeat Weekly Until...' v-model="endDateInput" :disabled-dates="disabledDates"></Datepicker>
                 <span class="userNotice">(Leave blank for repeat forever)</span>
             </div>
             <button class="btn btn-outline-success my-3" @click="createLesson">Create Lesson</button>
@@ -28,6 +28,7 @@
 //Imports all of the functionality from the date handling package Luxon
 import { DateTime } from 'luxon';
 import { mapState } from 'vuex';
+let today = DateTime.local()
 
 export default {
     name: "createLessonForm",
@@ -46,11 +47,22 @@ export default {
             startDateInput: null,
             startTimeInput: null,
             endDateInput: null,
-            durationInput: null
+            durationInput: null,
+            disabledDates: {
+                customPredictor: function(date) {
+                    if (date < today) {
+                        return true
+                    }
+                }
+            }
         }
     }, 
     methods: {
         async createLesson() {
+            if ((this.startDateInput == null)||(this.startTimeInput == null)||(this.durationInput==null)){
+                alert('Please make sure all fields filled in!');
+                return
+            }
             this.lessonInfo.teacherId = this.currentUser.id
             //Takes the inputted start date and start time and combines them into one date string with format YYYY-MM-DD HH:MM:SS
             this.lessonInfo.startDateTime = DateTime.fromJSDate(this.startDateInput).toISODate() + " " +this.startTimeInput.HH + ":" + this.startTimeInput.mm + ":00"

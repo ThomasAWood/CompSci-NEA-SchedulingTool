@@ -6,5 +6,6 @@ module.exports = app => {
     //Create a new lesson
     app.post('/api/lessons', lessons.createLesson);
 
+    app.delete('/api/lessons/:lessonId', lessons.delete)
     //app.get('/api/teachers/lessons/:teacherId', lessons.getLessonsByTeacherId);
 };

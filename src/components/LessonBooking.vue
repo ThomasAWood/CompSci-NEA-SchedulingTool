@@ -16,7 +16,7 @@ export default {
     name: "lessonBooking",
     props:['teacherId'],
     computed: {
-        ...mapState(['currentUser', 'teachersLessons'])
+        ...mapState(['currentUser', 'teachersLessons', 'bookings'])
     },
     async mounted() {
         this.$store.dispatch("loadUsers")

@@ -26,7 +26,9 @@ Lesson.create = (newLesson, result) => {
 
 
 Lesson.getLessonsByTeacherId = (teacherId, result) => {
-  sql.query(`SELECT * FROM lessons WHERE teacherId = ${teacherId}`, (err, res) => {
+  sql.query(`SELECT id, teacherId, unix_timestamp(startDateTime) AS startDateTime, duration, unix_timestamp(endDateTime) AS endDateTime, 
+             isRecurring FROM lessons WHERE teacherId = ${teacherId}`, 
+    (err, res) => {
     if (err) {
       console.log(err);
       result(err, null)
@@ -35,6 +37,28 @@ Lesson.getLessonsByTeacherId = (teacherId, result) => {
     result(null, res)
   })
 };
+
+//Delete a lesson
+Lesson.remove = (id, result) => {
+  sql.query(`DELETE FROM lessons WHERE id = ${id}`, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+      return;
+    }
+
+    if (res.affectedRows == 0) {
+      // not found lesson with the id
+      result({ kind: "not_found" }, null);
+      return;
+    }
+
+    console.log("deleted lesson with id: ", id);
+    result(null, res);
+  });
+};
+
+
 /*
 //Find a lesson by ID
 Lesson.findById = (lessonId, result) => {
@@ -55,26 +79,6 @@ Lesson.findById = (lessonId, result) => {
       result({ kind: "not_found" }, null);
     });
   };
-
-
-//Delete a lesson
-Lesson.remove = (id, result) => {
-    sql.query("DELETE FROM lessons WHERE lessonId = ?", id, (err, res) => {
-      if (err) {
-        console.log("error: ", err);
-        result(null, err);
-        return;
-      }
-  
-      if (res.affectedRows == 0) {
-        // not found lesson with the id
-        result({ kind: "not_found" }, null);
-        return;
-      }
-  
-      console.log("deleted lesson with id: ", id);
-      result(null, res);
-    });
-  };
 */
+
 module.exports = Lesson;

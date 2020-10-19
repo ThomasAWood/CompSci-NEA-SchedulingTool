@@ -38,7 +38,7 @@ Booking.cancel = (id, result) => {
 
 //Get teachers bookings
 Booking.teachersBookings = (teacherId, result) => {
-    sql.query(`SELECT nea.booking.id, nea.booking.studentId, nea.booking.lessonId, nea.booking.date, nea.booking.cancelled 
+    sql.query(`SELECT nea.booking.id, nea.booking.studentId, nea.lessons.teacherId, nea.booking.lessonId, nea.booking.date, nea.booking.cancelled, nea.lessons.duration 
     FROM nea.booking, nea.lessons
     WHERE ((nea.booking.lessonId = nea.lessons.id)
     AND (nea.lessons.teacherId = ${teacherId}));`, (err, res) => {
@@ -52,9 +52,12 @@ Booking.teachersBookings = (teacherId, result) => {
     });
 };
 
-
+//Get students booking
 Booking.studentsBookings = (studentId, result) => {
-    sql.query(`SELECT * FROM nea.booking WHERE studentId = ${studentId}`, (err, res) => {
+    sql.query(`SELECT nea.booking.id, nea.booking.studentId, nea.booking.lessonId, nea.booking.date, nea.booking.cancelled, nea.lessons.teacherId, nea.lessons.duration 
+    FROM nea.booking, nea.lessons 
+    WHERE studentId = ${studentId} 
+    AND nea.booking.lessonId = nea.lessons.id `, (err, res) => {
         if (err) {
             console.log(err);
             result(err, null);
@@ -62,6 +65,30 @@ Booking.studentsBookings = (studentId, result) => {
         }
         console.log(res[0]);
         result(null, res)
+    });
+};
+
+Booking.lessonIdBookings = (id, result) => {
+    sql.query(`SELECT * FROM nea.booking WHERE lessonId = ${id}`, (err, res) => {
+        if (err) {
+            console.log(err);
+            result(err, null);
+            return
+        }
+        console.log('Reponse', res);
+        result(null, res)
+    });
+};
+
+Booking.delete = (id, result) => {
+    sql.query(`DELETE FROM booking WHERE id=${id}`, (err, res) => {
+        if (err) {
+            console.log(err)
+            result(err, null);
+            return
+        }
+        console.log(res)
+        result (null, res)
     });
 };
 

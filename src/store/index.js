@@ -54,8 +54,20 @@ export default new Vuex.Store({
         },
         async loadTeachersLessons({commit}, searchInfo) {
             try {
-                let response = await Api().post('/search/teachers/lessons', searchInfo)
-                let lessons = response.data.lessonInstances
+                let lessonResponse = await Api().post('/search/teachers/lessons', searchInfo)
+                let lessons = lessonResponse.data.lessonInstances
+                let bookingsResponse = await Api().get(`/teachers/bookings/${searchInfo.userId}`)
+                let bookings = bookingsResponse.data
+                //Removes lesson which have a booking, so two calendar events don't show up
+                for (let lesson = 0; lesson < lessons.length; lesson++) {
+                    for (let booking = 0; booking < bookings.length; booking++) {
+                        if ((bookings[booking].lessonId == lessons[lesson].id) && (lessons[lesson].start == bookings[booking].start)) {
+                            console.log('Booking lesson overlap triggered')
+                            lessons.splice(lesson, 1);
+                            lesson--;
+                        }
+                    }
+                }
                 commit('SET_TEACHERS_LESSONS', lessons)
             } catch {
                 return {error: "There was an error when loading teachers lessons"}
@@ -133,6 +145,17 @@ export default new Vuex.Store({
             try {
                 let response = await Api().get(`/teachers/bookings/${userId}`)
                 let bookings = response.data
+                //Adds the students name to each of the bookings so it can be displayed to the teacher
+                for (let index = 0; index < bookings.length; index++) {
+                    try {
+                        let studentResponse = await Api().get(`/users/${bookings[index].studentId}`);
+                        let student = studentResponse.data
+                        bookings[index].title = student.fname + ' ' + student.lname
+                    } catch {
+                        bookings[index].title = 'Name Error'
+                        
+                    }
+                }
                 if (bookings.error) {
                     return bookings.error
                 }
@@ -149,10 +172,51 @@ export default new Vuex.Store({
                 if (bookings.error) {
                     return bookings.error
                 }
+                //Adds the students name to each of the bookings so it can be displayed to the teacher
+                for (let index = 0; index < bookings.length; index++) {
+                    try {
+                        //console.log('Booking', bookings[index])
+                        let teacherResponse = await Api().get(`/users/${bookings[index].teacherId}`);
+                        let teacher = teacherResponse.data
+                        bookings[index].title = teacher.fname + ' ' + teacher.lname
+                    } catch {
+                        bookings[index].title = 'Name Error'
+                        
+                    }
+                }
                 commit('SET_BOOKINGS', bookings)
                 return
             } catch {
                 return { error: "There was an error while getting the students bookings" }
+            }
+        },
+        async cancelBooking({commit}, id) {
+            try {
+                let response = await Api().post(`/bookings/cancel/${id}`)
+                let cancellation = response.data
+                if (cancellation.error) {
+                    return cancellation.error
+                } else {
+                    commit('SET_BOOKINGS', [])
+                    return cancellation 
+                }
+            } catch {
+                return { error: "There was an error while cancelling the booking. Please try again"}
+            }
+        },
+        async deleteLesson({commit}, id) {
+            try {
+                let response = await Api().delete(`/lessons/${id}`)
+                let deletion = response.data
+                console.log('Deletion', deletion)
+                if (deletion.error) {
+                    return deletion.error
+                } else {
+                    commit('SET_TEACHERS_LESSONS', [])
+                    return deletion
+                }
+            } catch {
+                return { error: "There was an error while deleting the lesson."}
             }
         }
 }});

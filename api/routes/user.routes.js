@@ -18,5 +18,6 @@ module.exports = app => {
     //Validate user login
     app.post('/api/users/sessions', users.login);
 
+    //Search for a teacher based on a text input
     app.post('/api/teachers/search', users.searchForTeacher);
 };

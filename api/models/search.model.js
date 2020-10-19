@@ -13,7 +13,7 @@ Search.getLessons = (search, result) => {
             return;
         }
         if (res.length) {
-            console.log('Lesson Search Output in search.model.js: ', res)
+            //console.log('Lesson Search Output in search.model.js: ', res)
             result(null, res);
             return;
         }
