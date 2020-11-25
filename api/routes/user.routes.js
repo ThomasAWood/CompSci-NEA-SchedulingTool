@@ -20,4 +20,7 @@ module.exports = app => {
 
     //Search for a teacher based on a text input
     app.post('/api/teachers/search', users.searchForTeacher);
+
+    //Search for a student based on a text input
+    app.post('/api/students/search', users.searchForStudent);
 };

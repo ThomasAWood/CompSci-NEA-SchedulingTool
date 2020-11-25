@@ -37,7 +37,9 @@
                 </div>
                 <input :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Password" id="passwordInput" v-model="registerInfo.password">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" @click="showPassword = !showPassword"><i :class='showPassword ? "fas fa-eye-slash" : "fas fa-eye"'></i></button>
+                    <b-button @click="showPassword = !showPassword" variant='outline-primary'>
+                        <b-icon :icon='showPassword ? "eye": "eye-slash"' ></b-icon>
+                    </b-button>
                 </div>
             </div>
             <span class="error">{{ errors[0] }}</span>
@@ -52,7 +54,7 @@
             <span class="error">{{ errors[0] }}</span>
             </ValidationProvider>
             <div class="mt-5">
-                <button class="btn btn-primary" :disabled="invalid" @click="registerUser">Submit</button>
+                <button class="btn btn-primary" type="button" :disabled="invalid" @click="registerUser">Submit</button>
             </div>
         </form>
         </ValidationObserver>
@@ -63,6 +65,8 @@
 import { extend, localize, ValidationObserver, ValidationProvider } from "vee-validate";
 import { required, email, min, max } from "vee-validate/dist/rules";
 import en from "vee-validate/dist/locale/en.json";
+import { mapState } from 'vuex';
+import { isEmptyObject } from 'jquery';
 
 extend("required", required);
 extend("email", email);
@@ -114,7 +118,10 @@ localize({
 
 
 export default {
-    name: 'RegisterFormStudent',
+    name: 'registerFormTeacher',
+    computed: {
+        ...mapState[ 'currentUser' ]
+    },
     data() {
             return {
                 showPassword: false,
@@ -140,6 +147,12 @@ export default {
                 console.log("Teacher Registered!");
                 this.$router.push({ name: 'homepage'});
             }
+        }
+    },
+    mounted() {
+        this.$store.dispatch('loadUsers');
+        if (!(isEmptyObject(this.currentUser))) {
+            this.$router.push({name: 'homepage'})
         }
     },
     components: {

@@ -1,24 +1,23 @@
 <template>
   <div>
-    <button class="btn btn-primary" @click="redirectBookingPage">Book Lessons</button>
-    <div id="calendarDiv">
+    <b-container id="calendarDiv" class="mt-3" fluid>
       <full-calendar :options='calendarOptions' ref="calendar"/>
-    </div>
+    </b-container>
     <modal name="bookingInfoModal" :width="500" :height="400">
             <div class="text-center">
                 <div>
                     <h1 v-if="!bookingModalInfo.cancelled">Booking</h1>
                     <h1 v-else>Cancelled Booking</h1>
                     <p>{{ bookingModalInfo.startTime }} - {{ bookingModalInfo.endTime }}</p>
-                    <p>Student: {{ bookingModalInfo.teacherName }}</p>
+                    <p>Teacher: {{ bookingModalInfo.teacherName }}</p>
                 </div>
                 <div v-if="!bookingModalInfo.cancelled">
-                    <button class="btn btn-danger" @click="cancelBooking">Cancel Booking</button>
+                    <b-button variant="danger" @click="cancelBooking">Cancel Booking</b-button>
                 </div>
                 <div v-else>
-                    <button class="btn btn-danger" @click="cancelBooking" disabled>Cancel Booking</button>
+                    <b-button variant="danger" @click="cancelBooking" disabled>Cancel Booking</b-button>
                 </div>
-                <button class="btn btn-outline-danger" @click="hideBookingInfo">Close</button>
+                <b-button variant="outline-danger" @click="hideBookingInfo">Close</b-button>
             </div>
         </modal>
   </div>
@@ -29,7 +28,6 @@ import { mapState } from 'vuex';
 import FullCalendar from '@fullcalendar/vue';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import bootstrapPlugin from '@fullcalendar/bootstrap';
 import { DateTime } from 'luxon';
 
 export default {
@@ -40,11 +38,10 @@ export default {
     data() {
       return {
         calendarOptions: {
-                plugins: [ timeGridPlugin, interactionPlugin, bootstrapPlugin ],
+                plugins: [ timeGridPlugin, interactionPlugin],
                 initialView: 'timeGridWeek',
-                themeSystem: 'bootstrap',
                 eventClick: this.eventSelected,
-                height: 620,
+                height: "100%",
                 allDaySlot: false,
                 nowIndicator: true,
                 scrollTime: '09:00:00',
@@ -78,9 +75,6 @@ export default {
       }
     },
     methods: {
-      redirectBookingPage() {
-        this.$router.push({ name: 'bookingPage'})
-      },
       showBookingInfo() {
         this.$modal.show('bookingInfoModal');
       },
@@ -95,19 +89,19 @@ export default {
         } else {
           alert("Cancellation Successfully Cancelled");
           this.hideBookingInfo();
-          this.$router.push({ name: 'homepage' });
+          this.$forceUpdate();
         }
       },
       eventSelected(event) {
             //console.log('Event Selected', event);
             if (!(event.event._def.extendedProps.cancelled)) {
-                this.bookingModalInfo.studentName = event.event._def.title
+                this.bookingModalInfo.teacherName = event.event._def.title
                 this.bookingModalInfo.startTime = DateTime.fromJSDate(event.event._instance.range.start).toLocaleString(DateTime.TIME_SIMPLE)
                 this.bookingModalInfo.endTime = DateTime.fromJSDate(event.event._instance.range.end).toLocaleString(DateTime.TIME_SIMPLE)
                 this.bookingModalInfo.bookingId = event.event._def.publicId
                 this.showBookingInfo()
             } else {
-                this.bookingModalInfo.studentName = event.event._def.title
+                this.bookingModalInfo.teacherName = event.event._def.title
                 this.bookingModalInfo.startTime = DateTime.fromJSDate(event.event._instance.range.start).toLocaleString(DateTime.TIME_SIMPLE)
                 this.bookingModalInfo.endTime = DateTime.fromJSDate(event.event._instance.range.end).toLocaleString(DateTime.TIME_SIMPLE)
                 this.bookingModalInfo.cancelled = true
@@ -136,9 +130,8 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #calendarDiv {
-  max-height: 100%
+  height: 85vh;
 }
-
 </style>

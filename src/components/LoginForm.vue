@@ -1,15 +1,17 @@
 <template>
     <div class="text-center" id="loginPage">
         <form class="form-signin">
-            <h1 class="mb-5">Login</h1>
+            <h1 class="my-5">Login</h1>
             <input type="email" class="form-control" placeholder="Email" id="emailInput" v-model="loginInfo.email">
-            <div class="input-group">
+            <div class="input-group mt-3">
                 <input :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="Password" id="passwordInput" v-model="loginInfo.password">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" @click="showPassword = !showPassword"><i :class='showPassword ? "fas fa-eye-slash" : "fas fa-eye"'></i></button>
+                    <b-button variant='outline-primary' type="button" @click="showPassword = !showPassword" >
+                        <b-icon :icon='showPassword ? "eye": "eye-slash"' ></b-icon>
+                    </b-button>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary mt-5" @click="loginUser">Submit</button>
+            <button type="button" class="btn btn-primary mt-5" @click="loginUser">Submit</button>
         </form>
     </div>
 </template>
@@ -48,7 +50,6 @@ export default {
   padding-top: 40px;
   padding-bottom: 40px;
  }
-
  .form-signin {
     width: 100%;
     max-width: 330px;

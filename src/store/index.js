@@ -10,7 +10,8 @@ export default new Vuex.Store({
         currentUser: {},
         teachersLessons: [],
         teachers: [],
-        bookings: []
+        bookings: [],
+        students: []
     },
     mutations: {
         SET_USERS(state, users) {
@@ -38,6 +39,12 @@ export default new Vuex.Store({
         },
         SET_BOOKINGS(state, bookings) {
             state.bookings = bookings
+        },
+        SET_STUDENTS(state, students) {
+            state.students = students
+        },
+        CLEAR_STUDENTS(state) {
+            state.students = []
         }
     },
     actions: {
@@ -59,12 +66,14 @@ export default new Vuex.Store({
                 let bookingsResponse = await Api().get(`/teachers/bookings/${searchInfo.userId}`)
                 let bookings = bookingsResponse.data
                 //Removes lesson which have a booking, so two calendar events don't show up
+                console.log('lessonLength', lessons.length)
                 for (let lesson = 0; lesson < lessons.length; lesson++) {
+                    console.log('Lesson1', lesson)
                     for (let booking = 0; booking < bookings.length; booking++) {
+                        console.log('Booking1', booking)
                         if ((bookings[booking].lessonId == lessons[lesson].id) && (lessons[lesson].start == bookings[booking].start)) {
                             console.log('Booking lesson overlap triggered')
                             lessons.splice(lesson, 1);
-                            lesson--;
                         }
                     }
                 }
@@ -77,8 +86,11 @@ export default new Vuex.Store({
             try {
                 let response = await Api().post('/users/sessions', loginInfo);
                 let user = response.data;
+                if (user.error) {
+                    return user.error
+                }
                 commit('SET_CURRENT_USER', user);
-                return
+                return user
             } catch {
                 return {error: "Username/Password was incorrect. Please try again"}
             }
@@ -112,6 +124,7 @@ export default new Vuex.Store({
         },
         async searchForTeachers({commit}, searchInput) {
             try {
+                console.log('searchInput:', searchInput)
                 let response = await Api().post('/teachers/search', searchInput);
                 console.log(response)
                 let teachers = response.data
@@ -123,8 +136,21 @@ export default new Vuex.Store({
             } catch {
                 return {error: "There was an error while searching the teachers"}
             }
-            
-
+        },
+        async searchForStudents({commit}, searchInput) {
+            try {
+                console.log('searchInput:', searchInput)
+                let response = await Api().post('/students/search', searchInput);
+                console.log(response)
+                let students = response.data
+                if (students.error) {
+                    return students.error
+                }
+                commit('SET_STUDENTS', students)
+                return students
+            } catch {
+                return {error: "There was an error while searching for that student"}
+            }
         },
         async createBooking({commit}, bookingInfo) {
             try {

@@ -1,4 +1,5 @@
 var sql = require('../db.js');
+var bcrypt = require('bcrypt');
 
 var User = function(user) {
     this.email = user.email,
@@ -11,20 +12,23 @@ var User = function(user) {
 
 //Create a new User
 User.create = (newUser, result) => {
-  sql.query(`INSERT INTO users SET ?`, newUser, (err, res) => {
-    if(err) {
-      console.log("Error registering user", err)
-      result(err, null);
-      return
-    }
-    console.log("created user: ", { id: res.insertId, ...newUser });
-    result(null, {id: res.insertId, ...newUser});
+  bcrypt.hash(newUser.password, 10, function(err, hash) {
+    newUser.password = hash
+    sql.query(`INSERT INTO users SET ?`, newUser, (err, res) => {
+      if(err) {
+        console.log("Error registering user", err)
+        result(err, null);
+        return
+      }
+      console.log("created user: ", { id: res.insertId, ...newUser });
+      result(null, {id: res.insertId, ...newUser});
+    });
   });
 };
 
 //Find a User by ID
 User.findById = (id, result) => {
-    sql.query(`SELECT * FROM users WHERE id = ${id}`, (err, res) => {
+    sql.query(`SELECT id, email, fname, lname, isTeacher, hourly FROM users WHERE id = ${id}`, (err, res) => {
       if (err) {
         console.log("error: ", err);
         result(err, null);
@@ -44,7 +48,7 @@ User.findById = (id, result) => {
 
 //Retrieve all of the users
 User.retrieveAll = (result) => {
-  sql.query('SELECT * FROM users', (err, res) => {
+  sql.query('SELECT id, email, password, fname, lname, isTeacher, hourly FROM users', (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -79,28 +83,40 @@ User.remove = (id, result) => {
   //Check user login credentials
   User.loginCheck = (email, password, result) => {
     //Query if there is a user with email and password
-    sql.query(`SELECT * FROM users WHERE email = "${email}" AND password = "${password}"`, (err, res) => {
-      //if there is an error return it
-      if (err) {
-        console.log("error: ", err);
-        result(err, null);
-        return;
-      }
-      //if there is a response then return the user
-      if (res.length) {
-        console.log('Correct Login Credentials');
-        result(null, res[0]);
-        return
-      }
-      //else return no user
-      result({ kind: "not_found" }, null);
-      return
-    });
+      sql.query(`SELECT id, email, password, fname, lname, isTeacher, hourly FROM users WHERE email = "${email}"`, (err, res) => {
+        //if there is an error return it
+        if (err) {
+          console.log("error: ", err);
+          result(err, null);
+        }
+        //if there is a response then return the user
+        if (res.length) {
+          console.log(res[0]);
+          bcrypt.compare(password, res[0].password, function(err, passwordRes) {
+            if (err) {
+              console.log('error:', err);
+              result(err, null);
+            }
+            if (passwordRes) {
+              console.log('Correct Login Credentials');
+              result(null, res[0]);
+            } else {
+              console.log('Incorrect Password');
+              result({ kind: 'not_found' }, null);
+            }
+          });
+        }
+        //else return no user
+        else {
+          result({ kind: "not_found" }, null);
+        }
+       
+      });
   };
 
 User.registerCheck = (email, result) => {
   //Search to see if there is a user with the submitted email
-  sql.query(`SELECT * FROM users WHERE email = "${email}"`, (err, res) => {
+  sql.query(`SELECT id, email FROM users WHERE email = "${email}"`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -118,13 +134,26 @@ User.registerCheck = (email, result) => {
 };
 
 User.teacherSearch = (searchInput, result) => {
-  sql.query(`SELECT id, email, fname, lname, hourly FROM users WHERE (isTeacher) = 1 AND ((fname LIKE '%${searchInput}%') or (lname LIKE '%${searchInput}%'));`, (err, res) => {
+  sql.query(`SELECT id, email, fname, lname, hourly FROM users WHERE (isTeacher = 1) AND ((fname LIKE '%${searchInput}%') OR (lname LIKE '${searchInput}'));`, (err, res) => {
   if (err) {
     console.log(err);
     result(err, null);
     return
   }
   console.log('Teachers with fname or lname found:', res)
+  console.log('Search', searchInput)
+  result(null, res);
+  });
+};
+
+User.studentSearch = (searchInput, result) => {
+  sql.query(`SELECT DISTINCT users.id, users.email, users.fname, users.lname FROM users, booking, lessons WHERE (booking.lessonId = lessons.id) AND (lessons.teacherId = ${searchInput.teacherId}) AND (booking.studentId = users.id) AND ((users.fname LIKE '%${searchInput.input}%') OR (users.lname LIKE '%${searchInput.input}%'));`, (err, res) => {
+  if (err) {
+    console.log(err);
+    result(err, null);
+    return
+  }
+  console.log('Students with fname or lname found:', res)
   console.log('Search', searchInput)
   result(null, res);
   });

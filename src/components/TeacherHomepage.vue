@@ -1,6 +1,16 @@
 <template>
-    <div class="text-center">
-        <button class="btn btn-primary" @click="showCreateLessonForm">Create New Lesson Slot</button>
+    <b-container fluid>
+        <b-row class="mt-2">
+            <b-col fluid>
+            <b-button class="float-right" variant="primary" @click="showCreateLessonForm" right>Create New Lesson Slot</b-button>
+            </b-col>
+        </b-row>
+        <b-row class="mt-2" id="calendarContainer">
+            <b-col>
+                <full-calendar :options='calendarOptions' ref="calendar" v-on:refreshCalendar="fetchLessons"/>
+            </b-col>
+        </b-row>
+        
         <modal name="createLessonFormModal" :width="300" :height="640">
             <div class="text-center">
                 <create-lesson></create-lesson>
@@ -16,13 +26,13 @@
                     <p>Student: {{ bookingModalInfo.studentName }}</p>
                 </div>
                 <div v-if="!bookingModalInfo.cancelled">
-                    <button class="btn btn-danger" @click="cancelBooking">Cancel Booking</button>
+                    <b-button variant="danger" @click="cancelBooking">Cancel Booking</b-button>
                 </div>
                 <div v-else>
-                    <button class="btn btn-danger" @click="cancelBooking" disabled>Cancel Booking</button>
+                    <b-button variant="danger" @click="cancelBooking" disabled>Cancel Booking</b-button>
                 </div>
-                <button class="btn btn-danger" @click="deleteLessonSlotFromBooking">Delete Lesson Slot</button>
-                <button class="btn btn-outline-danger" @click="hideBookingInfo">Close</button>
+                <b-button variant="danger" @click="deleteLessonSlotFromBooking">Delete Lesson Slot</b-button>
+                <b-button variant="outline-danger" @click="hideBookingInfo">Close</b-button>
             </div>
         </modal>
         <modal name="lessonInfoModal" :width="500" :height="400">
@@ -37,8 +47,7 @@
                 <button class="btn btn-outline-danger" @click="hideLessonInfo">Close</button>
             </div>
         </modal>
-        <full-calendar :options='calendarOptions' ref="calendar" v-on:refreshCalendar="fetchLessons"/>
-    </div>
+    </b-container>
 </template>
 
 <script>
@@ -48,7 +57,6 @@ import FullCalendar from '@fullcalendar/vue';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { DateTime } from 'luxon';
-import bootstrapPlugin from '@fullcalendar/bootstrap';
 import Api from '../service/api';
 
 export default {
@@ -59,13 +67,12 @@ export default {
     data() {
         return {
             calendarOptions: {
-                plugins: [ timeGridPlugin, interactionPlugin, bootstrapPlugin ],
+                plugins: [ timeGridPlugin, interactionPlugin],
                 initialView: 'timeGridWeek',
-                height: 620 ,
+                height: "100%",
                 allDaySlot: false,
                 nowIndicator: true,
                 scrollTime: '09:00:00',
-                themeSystem: 'bootstrap',
                 eventClick: this.eventSelected,
                 titleFormat: {
                   year: 'numeric',
@@ -108,6 +115,8 @@ export default {
         },
         hideCreateLessonForm() {
             this.$modal.hide('createLessonFormModal');
+            console.log('Hide Create Lesson Form');
+            this.updateCalendar()
         },
         showBookingInfo() {
             this.$modal.show('bookingInfoModal');
@@ -153,7 +162,7 @@ export default {
             } else {
                 alert("Cancellation Successfully Cancelled");
                 this.hideBookingInfo();
-                this.$router.push({ name: 'homepage' });
+                this.updateCalendar()
             }
         },
         async deleteLessonSlotFromBooking() {
@@ -168,7 +177,7 @@ export default {
                     alert(deletion.error);
                 } else {
                     alert('Lesson Deleted Successfully');
-                    this.$router.push({ name: 'homepage' });
+                    this.updateCalendar()
                 }
             }
         },
@@ -176,14 +185,14 @@ export default {
             let response = await Api().get(`/bookings/lessonid/${this.lessonModalInfo.lessonId}`)
             let bookings = response.data
             console.log('bookings:',bookings)
-            if (bookings != undefined) {
+            if (bookings.length != 0) {
                 if(confirm('This lesson or another occurence of it has bookings on it. Are you sure you want to delete it?')) {
                     let deletion = await this.$store.dispatch('deleteLesson', this.lessonModalInfo.lessonId)
                     if (deletion.error) {
                         alert(deletion.error);
                     } else {
                         alert('Lesson Deleted Successfully');
-                        this.$router.push({ name: 'homepage' });
+                        this.updateCalendar()
                 }
                 }
             } else {
@@ -193,7 +202,7 @@ export default {
                         alert(deletion.error);
                     } else {
                         alert('Lesson Deleted Successfully');
-                        this.$router.push({ name: 'homepage' });
+                        this.updateCalendar();
                 }
                 }
             }
@@ -201,10 +210,18 @@ export default {
         async fetchLessons() {
             let teacherLessonQueryInfo = {
                 "userId": this.currentUser.id,
-                "startDate": DateTime.local().minus({ years: 2}).toUTC().toISODate(),
-                "endDate": DateTime.local().plus({ years: 2}).toUTC().toISODate()
+                "startDate": DateTime.local().minus({ years: 0.5}).toUTC().toISODate(),
+                "endDate": DateTime.local().plus({ years: 0.5}).toUTC().toISODate()
             }
+            console.log(teacherLessonQueryInfo)
             await this.$store.dispatch("loadTeachersLessons", teacherLessonQueryInfo)
+        },
+        
+        async updateCalendar() {
+            await this.fetchLessons();
+            let calendar = this.$refs['calendar'].getApi();
+            calendar.getEventSourceById('teachersLessons').remove()
+            calendar.addEventSource({id: 'teachersLessons', events: this.teachersLessons, color: '#52BE80', display: 'block'})
         }
     },
     components: {
@@ -213,7 +230,7 @@ export default {
     },
     //Mounted runs when the page is loaded, loads all required data, is async so we can wait until data is loaded to run
     async mounted() {
-        this.$store.dispatch("loadUsers")
+        await this.$store.dispatch("loadUsers")
         //Fetch the lessons from the fetchLessons Method
         await this.fetchLessons()
         await this.$store.dispatch("loadTeachersBookings", this.currentUser.id)
@@ -228,13 +245,15 @@ export default {
         //Open calendar api
         let calendar = this.$refs['calendar'].getApi()
         //Add the lessons as an event source to the calendar
-        calendar.addEventSource({events: this.teachersLessons, color: '#52BE80', display: 'block'})
-        calendar.addEventSource({events: this.bookings, color: '#E74C3C', display: 'block'})
-        calendar.addEventSource({events: this.cancelledBookings, color: 'red'})
+        calendar.addEventSource({id: 'teachersLessons', events: this.teachersLessons, color: '#52BE80', display: 'block'})
+        calendar.addEventSource({id: 'bookings', events: this.bookings, color: '#E74C3C', display: 'block'})
+        calendar.addEventSource({id: 'cancelledBookings', events: this.cancelledBookings, color: 'red'})
     }
     }
 </script>
 
 <style scoped>
-
+#calendarContainer {
+    height: 85vh;
+}
 </style>

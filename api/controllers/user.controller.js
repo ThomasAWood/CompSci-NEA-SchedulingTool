@@ -95,7 +95,7 @@ exports.login = (req, res) => {
           message: "Error when checking login credentials"
         });
       }
-    } else res.send(data);
+    } else res.status(200).send(data);
   });
 };
 
@@ -116,13 +116,25 @@ exports.register = (req, res) => {
 };
 
 exports.searchForTeacher = (req, res) => {
-  User.teacherSearch(req.body.searchInput, (err, teachers) => {
+  User.teacherSearch(req.body.input, (err, teachers) => {
     if (err) {
       res.status(401).send({
         error: 'There was an error when searching for the teachers'
       });
     } else {
       res.send(teachers);
+    }
+  });
+};
+
+exports.searchForStudent = (req, res) => {
+  User.studentSearch(req.body, (err, students) => {
+    if (err) {
+      res.status(401).send({
+        error: 'There was an error when searching for the students'
+      });
+    } else {
+      res.send(students);
     }
   });
 };

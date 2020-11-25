@@ -9,7 +9,7 @@
 import { DateTime } from 'luxon';
 import { mapState } from 'vuex';
 import FullCalendar from '@fullcalendar/vue'
-import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 
 export default {
@@ -30,9 +30,31 @@ export default {
     data() {
         return {
             calendarOptions: {
-                plugins: [ dayGridPlugin, interactionPlugin ],
-                initialView: 'dayGridWeek',
-                eventClick: this.lessonSlotClick
+                plugins: [ timeGridPlugin, interactionPlugin],
+                initialView: 'timeGridWeek',
+                height: 620 ,
+                allDaySlot: false,
+                nowIndicator: true,
+                scrollTime: '09:00:00',
+                eventClick: this.lessonSlotClick,
+                titleFormat: {
+                  year: 'numeric',
+                  month: 'long'
+                },
+                dayHeaderFormat: {
+                  weekday: 'short',
+                  day: 'numeric'
+                },
+                eventTimeFormat: {
+                  hour: 'numeric',
+                  minute: '2-digit',
+                  meridiem: false
+                },
+                slotLabelFormat: {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    meridiem: 'short'
+                }
             },
             selectedLessonSlot: {
                 startDate: null, 
