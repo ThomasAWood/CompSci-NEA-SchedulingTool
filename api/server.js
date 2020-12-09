@@ -10,7 +10,6 @@ app.use(cors());
 
 require('./routes/user.routes.js')(app);
 require('./routes/lesson.routes.js')(app);
-require('./routes/lessonException.routes.js')(app);
 require('./routes/booking.routes.js')(app);
 require('./routes/search.routes.js')(app);
 

@@ -89,7 +89,7 @@ export default {
         } else {
           alert("Cancellation Successfully Cancelled");
           this.hideBookingInfo();
-          this.$forceUpdate();
+          this.updateCalendar();
         }
       },
       eventSelected(event) {
@@ -107,7 +107,21 @@ export default {
                 this.bookingModalInfo.cancelled = true
                 this.showBookingInfo()
             }
-      }
+      },
+      async updateCalendar() {
+            await this.$store.dispatch("loadStudentsBookings", this.currentUser.id);
+            for (let index = 0; index < this.bookings.length; index++) {
+            if (this.bookings[index].cancelled) {
+                this.cancelledBookings.push(this.bookings[index])
+                this.bookings.splice(index, 1)
+              }
+            }
+            let calendar = this.$refs['calendar'].getApi();
+            calendar.getEventSourceById('studentBookings').remove()
+            calendar.getEventSourceById('studentCancelled').remove()
+            calendar.addEventSource({id: "studentBookings", events: this.bookings, color: '#E74C3C', display: 'block'})
+            calendar.addEventSource({id: "studentCancelled", events: this.cancelledBookings, color: 'red'})
+        }
     },
     components: {
       FullCalendar
@@ -124,8 +138,8 @@ export default {
       //Open calendar api
       let calendar = this.$refs['calendar'].getApi()
       //Add the lessons as an event source to the calendar
-      calendar.addEventSource({events: this.bookings, color: '#E74C3C', display: 'block'})
-      calendar.addEventSource({events: this.cancelledBookings, color: 'red'})
+      calendar.addEventSource({id: "studentBookings", events: this.bookings, color: '#E74C3C', display: 'block'})
+      calendar.addEventSource({id: "studentCancelled", events: this.cancelledBookings, color: 'red'})
     }
 }
 </script>

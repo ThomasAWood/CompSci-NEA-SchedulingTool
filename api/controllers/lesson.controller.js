@@ -183,24 +183,3 @@ exports.delete = (req, res) => {
     } else res.send({ message: `Lesson was deleted successfully!` });
   });
 };
-
-/*
-//Find a lesson in the database from id
-exports.findOne = (req, res) => {
-    Lesson.findById(req.params.lessonId, (err, data) => {
-      if (err) {
-        if (err.kind === "not_found") {
-          res.status(404).send({
-            message: `Not found lesson with id ${req.params.lessonId}.`
-          });
-        } else {
-          res.status(500).send({
-            message: "Error retrieving lesson with id " + req.params.lessonId
-          });
-        }
-      } else res.send(data);
-    });
-  };
-
-
-  */
