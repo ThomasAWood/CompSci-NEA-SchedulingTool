@@ -92,4 +92,16 @@ Booking.delete = (id, result) => {
     });
 };
 
+Booking.invoicing = (params, result) => {
+    sql.query(`SELECT lessons.duration, booking.cancelled, unix_timestamp(booking.date) AS date FROM nea.booking, nea.lessons, nea.users WHERE booking.studentId = ${params.id} AND booking.lessonId = lessons.id AND booking.studentId = users.id AND (unix_timestamp(booking.date) >= ${params.start}) AND (unix_timestamp(booking.date) <= ${params.end});`, (err, res) => {
+        if (err) {
+            console.log(err)
+            result(err, null);
+            return
+        }
+        console.log(res)
+        result(null, res)
+    });
+};
+
 module.exports = Booking;

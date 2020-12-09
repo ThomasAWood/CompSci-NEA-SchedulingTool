@@ -20,6 +20,7 @@
             <b-navbar-nav>
                 <b-nav-item @click="homepageRedirect">Home</b-nav-item>
                 <b-nav-item @click="studentsRedirect">Students</b-nav-item>
+                <b-nav-item @click="invoiceRedirect">Invoicing</b-nav-item>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-text><span id="name">{{ currentUser.fname }}</span></b-nav-text>
@@ -66,7 +67,10 @@ export default {
         },
         redirectBookingPage() {
         this.$router.push({ name: 'bookingPage'})
-      },
+        },
+        invoiceRedirect() {
+            this.$router.push({ name: 'invoicing'})
+        }
   },
 }
 </script>

@@ -119,3 +119,15 @@ exports.delete = (req, res) => {
     }
   });
 };
+
+exports.getStudentInvoice = (req, res) => {
+  Booking.invoicing(req.body, (err, data) => {
+    if (err) {
+      res.status(500).send({
+        message: "Some error occured while creating an invoicing"
+      });
+    } else {
+      res.send(data);
+    }
+  });
+};

@@ -25,6 +25,7 @@ import RegisterFormTeacher from './components/RegisterFormTeacher';
 import BookingPage from './components/BookingPage';
 import LessonBooking from './components/LessonBooking';
 import StudentSearch from './components/StudentSearch';
+import Invoicing from './components/Invoicing';
 import LandingPage from './components/LandingPage';
 import Error404 from './components/Error404';
 
@@ -43,6 +44,7 @@ const router = new VueRouter({
     { path: '/booking', component: BookingPage, name: "bookingPage", beforeEnter: loggedInStudent},
     { path: '/lesson/booking/:teacherId', component: LessonBooking, name:'lessonBooking', props: true, beforeEnter: loggedInStudent},
     { path: '/students', component: StudentSearch, name: 'studentSearch', beforeEnter: loggedInTeacher},
+    { path: '/invoicing', component: Invoicing, name: 'invoicing', beforeEnter: loggedInTeacher},
     { path: '/*', component: Error404, name: '404'}
   ]
 });
