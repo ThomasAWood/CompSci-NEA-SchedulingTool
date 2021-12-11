@@ -1,5 +1,8 @@
 # cs-nea-schedulingtool
 
+My Computer Science A Level Non Exam Assessment Project 
+
+
 ## Project setup
 ```
 npm install
