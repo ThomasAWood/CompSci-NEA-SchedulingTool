@@ -39,7 +39,7 @@ export default new Vuex.Store({
         },
         SET_BOOKINGS(state, bookings) {
             state.bookings = bookings
-        },
+       },
         SET_STUDENTS(state, students) {
             state.students = students
         },
