@@ -17,12 +17,12 @@ export default {
                 id: null,
                 start: null,
                 end: null
-            }
+            } 
         }
     },
     methods: {
         createInvoice() {
-            this.$store.dispatch('loadInvoiceData', invoiceSearchData)
+            this.$store.dispatch('loadInvoiceData', this.invoiceSearchData)
         }
     },
     async mounted() {
