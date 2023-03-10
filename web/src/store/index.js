@@ -50,6 +50,7 @@ export default new Vuex.Store({
     actions: {
         async loadUsers({commit}) {
             let response = await Api().get('/users');
+            console.log(response);
             let users = response.data;
             commit('SET_USERS', users);
 

@@ -29,7 +29,7 @@
     "vue": "^2.6.12",
     "vue-bootstrap-datetimepicker": "^5.0.1",
     "vue-js-modal": "^2.0.0-rc.6",
-    "vue-router": "^3.4.9",
+    "vue-router": "~3.4.9",
     "vue-timeselector": "^1.0.0",
     "vue2-timepicker": "^1.1.5",
     "vuejs-datepicker": "^1.6.2",

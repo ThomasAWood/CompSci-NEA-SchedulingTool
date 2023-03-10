@@ -21,9 +21,9 @@ export default {
         }
     },
     methods: {
-        createInvoice() {
-            this.$store.dispatch('loadInvoiceData', invoiceSearchData)
-        }
+        // createInvoice() {
+        //     this.$store.dispatch('loadInvoiceData', invoiceSearchData)
+        // }
     },
     async mounted() {
         this.$store.dispatch('loadUsers');
